@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "YouTube PiP",
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
   "version": "1.0.0",
-  "description": "Free PiP button for YouTube player controls. Pop out video over any app, even outside Chrome.",
+  "default_locale": "en_GB",
   "homepage_url": "https://github.com/abarriel/youtube-pip",
   "minimum_chrome_version": "116",
   "permissions": [
@@ -34,7 +35,7 @@
         "default": "Alt+P",
         "mac": "Alt+P"
       },
-      "description": "Toggle Picture-in-Picture"
+      "description": "__MSG_commandTogglePip__"
     }
   }
 }

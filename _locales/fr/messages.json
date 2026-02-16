@@ -1,0 +1,26 @@
+{
+  "extensionName": {
+    "message": "YouTube PiP",
+    "description": "Le nom de l'extension."
+  },
+  "extensionDescription": {
+    "message": "Bouton PiP gratuit pour YouTube. La video flotte au-dessus de toutes vos applications, meme hors de Chrome.",
+    "description": "La description de l'extension affichee dans le store et chrome://extensions."
+  },
+  "tooltipEnter": {
+    "message": "Picture-in-Picture (Alt+P)",
+    "description": "Info-bulle du bouton PiP quand le mode PiP est inactif."
+  },
+  "tooltipExit": {
+    "message": "Quitter PiP (Alt+P)",
+    "description": "Info-bulle du bouton PiP quand le mode PiP est actif."
+  },
+  "ariaLabel": {
+    "message": "Picture-in-Picture",
+    "description": "Label accessible pour le bouton PiP."
+  },
+  "commandTogglePip": {
+    "message": "Activer/desactiver Picture-in-Picture",
+    "description": "Description du raccourci clavier."
+  }
+}
