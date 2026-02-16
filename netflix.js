@@ -4,10 +4,13 @@
 
   const BUTTON_ID = PipExt.BUTTON_ID;
   const SVG_NS = "http://www.w3.org/2000/svg";
+  // Thin-stroke PiP icons matching Netflix icon weight (2px outlined strokes via evenodd fill)
+  // Enter: outlined monitor with a solid small PiP window in the bottom-right corner
   const PIP_PATH_ENTER =
-    "M19 11h-8v6h8v-6zm4 10V3H1v18h22zm-2-1.98H3V4.97h18v14.05z";
+    "M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h16V5H4zm8 6h8v8h-8v-8z";
+  // Exit: outlined monitor with an outlined (not solid) PiP window centered
   const PIP_PATH_EXIT =
-    "M21 3H3v18h18V3zm-2 16H5V5h14v14zm-4-8H9v6h6v-6z";
+    "M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h16V5H4zm3 3h10v8H8V8zm2 2v4h6v-4h-6z";
 
   function getVideo() {
     return document.querySelector("video");
@@ -120,9 +123,20 @@
     const spacer = cloneNativeSpacer(fsBtn);
     const ref = findRowRef(row, fsBtn);
 
-    if (ref) {
-      row.insertBefore(spacer, ref);
-      row.insertBefore(wrapper, ref);
+    // ref is the fullscreen wrapper (direct child of row).
+    // Its previousElementSibling may be the native fullscreen spacer.
+    // We need to insert BEFORE that spacer so the order is:
+    //   [our-spacer] [pip-wrapper] [fs-spacer] [fs-wrapper]
+    const insertRef = ref
+      ? (() => {
+          const prev = ref.previousElementSibling;
+          return prev && !prev.querySelector("button") ? prev : ref;
+        })()
+      : null;
+
+    if (insertRef) {
+      row.insertBefore(spacer, insertRef);
+      row.insertBefore(wrapper, insertRef);
     } else {
       row.appendChild(spacer);
       row.appendChild(wrapper);
