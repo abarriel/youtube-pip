@@ -1,0 +1,53 @@
+/* YouTube PiP Extension — Button Styles */
+
+.ytp-pip-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0.9;
+  position: relative;
+  vertical-align: top;
+}
+
+.ytp-pip-button:hover {
+  opacity: 1;
+}
+
+.ytp-pip-button svg {
+  width: 24px;
+  height: 24px;
+  fill: #fff;
+  pointer-events: none;
+}
+
+/* Active state when PiP is on */
+.ytp-pip-button.ytp-pip-active svg {
+  fill: #3ea6ff;
+}
+
+/* Tooltip */
+.ytp-pip-button .ytp-pip-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(28, 28, 28, 0.9);
+  color: #fff;
+  font-size: 12px;
+  font-family: "YouTube Noto", Roboto, Arial, Helvetica, sans-serif;
+  padding: 5px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  margin-bottom: 8px;
+  z-index: 9999;
+}
+
+.ytp-pip-button:hover .ytp-pip-tooltip {
+  opacity: 1;
+}
