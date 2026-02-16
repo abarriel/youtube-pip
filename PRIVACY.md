@@ -1,12 +1,12 @@
-# Privacy Policy — YouTube PiP
+# Privacy Policy — YouTube & Netflix PiP
 
 **Last updated:** February 16, 2026
 
 ## Overview
 
-YouTube PiP is a browser extension that adds a Picture-in-Picture button to
-the YouTube video player. It is designed with privacy in mind and collects
-**no personal data whatsoever**.
+YouTube & Netflix PiP is a browser extension that adds a Picture-in-Picture
+button to the YouTube and Netflix video players. It is designed with privacy
+in mind and collects **no personal data whatsoever**.
 
 ## Data Collection
 
@@ -33,6 +33,7 @@ This data:
 |---|---|
 | `storage` | To save your preferred PiP window size locally on your device. |
 | Host access to `youtube.com` | To inject the PiP button into the YouTube video player controls. |
+| Host access to `netflix.com` | To inject the PiP button into the Netflix video player controls. |
 
 ## Third-Party Services
 

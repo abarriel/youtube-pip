@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "default_locale": "en_GB",
   "homepage_url": "https://github.com/abarriel/youtube-pip",
   "minimum_chrome_version": "116",
@@ -10,7 +10,8 @@
     "storage"
   ],
   "host_permissions": [
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "*://*.netflix.com/*"
   ],
   "icons": {
     "16": "icons/icon16.png",
@@ -21,8 +22,13 @@
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["content.js"],
-      "css": ["content.css"],
+      "js": ["pip-shared.js", "youtube.js"],
+      "css": ["youtube.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.netflix.com/*"],
+      "js": ["pip-shared.js", "netflix.js"],
       "run_at": "document_idle"
     }
   ],

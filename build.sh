@@ -14,8 +14,10 @@ rm -f "$OUT"
 zip -r "$OUT" \
   manifest.json \
   background.js \
-  content.js \
-  content.css \
+  pip-shared.js \
+  youtube.js \
+  youtube.css \
+  netflix.js \
   icons/icon16.png \
   icons/icon32.png \
   icons/icon48.png \

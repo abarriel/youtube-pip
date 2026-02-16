@@ -1,10 +1,10 @@
 {
   "extensionName": {
-    "message": "YouTube PiP",
+    "message": "YouTube & Netflix PiP",
     "description": "Le nom de l'extension."
   },
   "extensionDescription": {
-    "message": "Bouton PiP gratuit pour YouTube. La vidéo flotte au-dessus de toutes vos applications, même hors de Chrome.",
+    "message": "Bouton PiP gratuit pour YouTube et Netflix. La vidéo flotte au-dessus de toutes vos applications, même hors de Chrome.",
     "description": "La description de l'extension affichée dans le store et chrome://extensions."
   },
   "tooltipEnter": {

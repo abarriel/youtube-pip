@@ -1,6 +1,6 @@
-/* YouTube PiP Extension — Button Styles */
+/* PiP Extension — YouTube styles */
 
-.ytp-pip-button {
+.pip-ext-button.ytp-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -10,26 +10,35 @@
   opacity: 0.9;
   position: relative;
   vertical-align: top;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
 }
 
-.ytp-pip-button:hover {
+.pip-ext-button.ytp-button:hover {
   opacity: 1;
 }
 
-.ytp-pip-button svg {
+.pip-ext-button.ytp-button .pip-ext-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pip-ext-button.ytp-button .pip-ext-icon svg {
   width: 24px;
   height: 24px;
   fill: #fff;
   pointer-events: none;
 }
 
-/* Active state when PiP is on */
-.ytp-pip-button.ytp-pip-active svg {
+.pip-ext-button.ytp-button.pip-ext-active .pip-ext-icon svg {
   fill: #3ea6ff;
 }
 
 /* Tooltip */
-.ytp-pip-button .ytp-pip-tooltip {
+.pip-ext-button.ytp-button .pip-ext-tooltip {
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -48,6 +57,6 @@
   z-index: 9999;
 }
 
-.ytp-pip-button:hover .ytp-pip-tooltip {
+.pip-ext-button.ytp-button:hover .pip-ext-tooltip {
   opacity: 1;
 }
