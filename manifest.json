@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "YouTube PiP",
   "version": "1.0.0",
-  "description": "Adds a Picture-in-Picture button to YouTube player controls. Works even outside Chrome.",
+  "description": "Free PiP button for YouTube player controls. Pop out video over any app, even outside Chrome.",
   "homepage_url": "https://github.com/abarriel/youtube-pip",
   "minimum_chrome_version": "116",
   "permissions": [

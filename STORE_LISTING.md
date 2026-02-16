@@ -9,7 +9,7 @@ Everything you need to fill out the Chrome Developer Dashboard.
 **Name:** YouTube PiP
 
 **Summary (manifest description, 132 chars max):**
-> Adds a Picture-in-Picture button to YouTube player controls. Works even outside Chrome.
+> Free PiP button for YouTube player controls. Pop out video over any app, even outside Chrome.
 
 **Detailed Description (for store listing):**
 
@@ -20,6 +20,8 @@ Everything you need to fill out the Chrome Developer Dashboard.
 > window that stays on top of every application on your screen. Keep watching
 > while you code, browse, or work in any other app.
 >
+> 100% free and open source — no ads, no tracking, no data collection. Ever.
+>
 > Features:
 > - One-click PiP toggle in the YouTube player controls
 > - Keyboard shortcut (Alt+P) to toggle PiP
@@ -28,10 +30,12 @@ Everything you need to fill out the Chrome Developer Dashboard.
 > - Remembers your preferred PiP window size between sessions
 > - Works seamlessly with YouTube's single-page navigation
 > - Minimal permissions — only accesses youtube.com, stores window size locally
-> - No ads, no tracking, no data collection
 >
 > The extension uses the browser's native Picture-in-Picture API, so the
 > floating video window works across all applications — not just Chrome.
+>
+> Source code: https://github.com/abarriel/youtube-pip
+> Found a bug or have a feature request? Open an issue on GitHub.
 
 **Primary Category:** Productivity (or Entertainment)
 
