@@ -4,8 +4,8 @@
     "description": "Le nom de l'extension."
   },
   "extensionDescription": {
-    "message": "Bouton PiP gratuit pour YouTube. La video flotte au-dessus de toutes vos applications, meme hors de Chrome.",
-    "description": "La description de l'extension affichee dans le store et chrome://extensions."
+    "message": "Bouton PiP gratuit pour YouTube. La vidéo flotte au-dessus de toutes vos applications, même hors de Chrome.",
+    "description": "La description de l'extension affichée dans le store et chrome://extensions."
   },
   "tooltipEnter": {
     "message": "Picture-in-Picture (Alt+P)",
@@ -20,7 +20,7 @@
     "description": "Label accessible pour le bouton PiP."
   },
   "commandTogglePip": {
-    "message": "Activer/desactiver Picture-in-Picture",
+    "message": "Activer/désactiver Picture-in-Picture",
     "description": "Description du raccourci clavier."
   }
 }

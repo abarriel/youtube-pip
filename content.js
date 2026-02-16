@@ -6,7 +6,7 @@
   const STORAGE_KEY = "ytpip_window_size";
 
   // ─── i18n helpers ────────────────────────────────────────────────
-  const msg = (key) => chrome.i18n.getMessage(key) || key;
+  const i18n = (key) => chrome.i18n.getMessage(key) || key;
 
   // ─── State ──────────────────────────────────────────────────────
   let pipActive = false;
@@ -117,13 +117,13 @@
 
     if (pipActive) {
       btn.classList.add("ytp-pip-active");
-      if (tooltip) tooltip.textContent = msg("tooltipExit");
+      if (tooltip) tooltip.textContent = i18n("tooltipExit");
       if (iconContainer) {
         iconContainer.replaceChildren(createPipExitIcon());
       }
     } else {
       btn.classList.remove("ytp-pip-active");
-      if (tooltip) tooltip.textContent = msg("tooltipEnter");
+      if (tooltip) tooltip.textContent = i18n("tooltipEnter");
       if (iconContainer) {
         iconContainer.replaceChildren(createPipIcon());
       }
@@ -165,14 +165,14 @@
     const btn = document.createElement("button");
     btn.id = PIP_BUTTON_ID;
     btn.className = "ytp-pip-button ytp-button";
-    btn.setAttribute("aria-label", msg("ariaLabel"));
+    btn.setAttribute("aria-label", i18n("ariaLabel"));
     btn.setAttribute("title", "");
     btn.setAttribute("data-tooltip-target-id", "ytp-pip-button-custom");
 
     // Tooltip span
     const tooltip = document.createElement("span");
     tooltip.className = "ytp-pip-tooltip";
-    tooltip.textContent = msg("tooltipEnter");
+    tooltip.textContent = i18n("tooltipEnter");
     btn.appendChild(tooltip);
 
     // Icon wrapper
