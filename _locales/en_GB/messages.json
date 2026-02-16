@@ -1,10 +1,10 @@
 {
   "extensionName": {
-    "message": "YouTube PiP",
+    "message": "YouTube & Netflix PiP",
     "description": "The name of the extension."
   },
   "extensionDescription": {
-    "message": "Free PiP button for YouTube player controls. Pop out video over any app, even outside Chrome.",
+    "message": "Free PiP button for YouTube & Netflix player controls. Pop out video over any app, even outside Chrome.",
     "description": "The description of the extension shown in the store and chrome://extensions."
   },
   "tooltipEnter": {

@@ -1,18 +1,32 @@
-// YouTube PiP Extension — Content Script
+// PiP Extension — Content Script (YouTube + Netflix)
 (() => {
   "use strict";
 
-  const PIP_BUTTON_ID = "ytp-pip-button-custom";
-  const STORAGE_KEY = "ytpip_window_size";
+  const PIP_BUTTON_ID = "pip-ext-button-custom";
+  const STORAGE_KEY = "pip_window_size";
 
-  // ─── i18n helpers ────────────────────────────────────────────────
+  // ─── i18n helper ──────────────────────────────────────────────
   const i18n = (key) => chrome.i18n.getMessage(key) || key;
 
-  // ─── State ──────────────────────────────────────────────────────
+  // ─── State ────────────────────────────────────────────────────
   let pipActive = false;
   let autoPipEnabled = true;
 
-  // ─── SVG Builder (Trusted Types safe — no innerHTML) ───────────
+  // ─── Site detection ───────────────────────────────────────────
+  const SITE_YOUTUBE = "youtube";
+  const SITE_NETFLIX = "netflix";
+  const SITE_UNKNOWN = "unknown";
+
+  function detectSite() {
+    const host = location.hostname;
+    if (host.includes("youtube.com")) return SITE_YOUTUBE;
+    if (host.includes("netflix.com")) return SITE_NETFLIX;
+    return SITE_UNKNOWN;
+  }
+
+  const currentSite = detectSite();
+
+  // ─── SVG Builder (Trusted Types safe — no innerHTML) ──────────
   const SVG_NS = "http://www.w3.org/2000/svg";
 
   function createPipIcon() {
@@ -43,33 +57,60 @@
     return svg;
   }
 
-  // ─── Helpers ────────────────────────────────────────────────────
+  // ─── Helpers ──────────────────────────────────────────────────
   function getVideo() {
-    return (
-      document.querySelector("video.html5-main-video") ||
-      document.querySelector("video")
-    );
+    if (currentSite === SITE_YOUTUBE) {
+      return (
+        document.querySelector("video.html5-main-video") ||
+        document.querySelector("video")
+      );
+    }
+    if (currentSite === SITE_NETFLIX) {
+      return document.querySelector("video");
+    }
+    return document.querySelector("video");
   }
 
-  /**
-   * YouTube player controls have evolved over time.
-   * Current layout (2024+):
-   *   .ytp-right-controls
-   *     .ytp-right-controls-left   (autonav, subtitles, settings)
-   *     .ytp-right-controls-right  (size, remote, fullscreen)
-   *
-   * We insert our button in .ytp-right-controls-right before fullscreen,
-   * or fall back to .ytp-right-controls directly for older layouts.
-   */
+  // ─── Site-specific: get the container to insert the PiP button ─
   function getInsertionTarget() {
-    // Try the new nested layout first
-    const rightRight = document.querySelector(".ytp-right-controls-right");
-    if (rightRight) return rightRight;
-    // Fall back to the classic flat layout
-    return document.querySelector(".ytp-right-controls");
+    if (currentSite === SITE_YOUTUBE) {
+      // YouTube 2024+ has nested controls; fall back to flat layout
+      return (
+        document.querySelector(".ytp-right-controls-right") ||
+        document.querySelector(".ytp-right-controls")
+      );
+    }
+    if (currentSite === SITE_NETFLIX) {
+      // Netflix player button row — try multiple selectors as Netflix
+      // changes their class names frequently
+      return (
+        document.querySelector("[data-uia='controls-standard']") ||
+        document.querySelector(".PlayerControlsNeo__button-control-row") ||
+        document.querySelector(".watch-video--bottom-controls-container")
+      );
+    }
+    return null;
   }
 
-  // ─── Save / Restore PiP window size ────────────────────────────
+  // ─── Site-specific: find the reference button to insert before ─
+  function getInsertionReference(container) {
+    if (currentSite === SITE_YOUTUBE) {
+      const fsBtn = container.querySelector(".ytp-fullscreen-button");
+      if (fsBtn && fsBtn.parentNode === container) return fsBtn;
+      return null;
+    }
+    if (currentSite === SITE_NETFLIX) {
+      // Insert before the fullscreen button on Netflix
+      const fsBtn =
+        container.querySelector("[data-uia='control-fullscreen-enter']") ||
+        container.querySelector("[data-uia='control-fullscreen-exit']");
+      if (fsBtn) return fsBtn;
+      return null;
+    }
+    return null;
+  }
+
+  // ─── Save / Restore PiP window size ───────────────────────────
   function savePipSize(pipWindow) {
     if (!pipWindow) return;
     try {
@@ -80,16 +121,7 @@
     }
   }
 
-  async function getSavedSize() {
-    try {
-      const result = await chrome.storage.local.get(STORAGE_KEY);
-      return result[STORAGE_KEY] || null;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  // ─── Toggle PiP ────────────────────────────────────────────────
+  // ─── Toggle PiP ──────────────────────────────────────────────
   async function togglePip() {
     const video = getVideo();
     if (!video) return;
@@ -97,32 +129,30 @@
     try {
       if (document.pictureInPictureElement) {
         await document.exitPictureInPicture();
-      } else {
-        if (document.pictureInPictureEnabled) {
-          await video.requestPictureInPicture();
-        }
+      } else if (document.pictureInPictureEnabled) {
+        await video.requestPictureInPicture();
       }
     } catch (err) {
-      console.warn("[YouTube PiP]", err.message);
+      console.warn("[PiP Extension]", err.message);
     }
   }
 
-  // ─── Update button visual state ────────────────────────────────
+  // ─── Update button visual state ───────────────────────────────
   function updateButtonState() {
     const btn = document.getElementById(PIP_BUTTON_ID);
     if (!btn) return;
 
-    const tooltip = btn.querySelector(".ytp-pip-tooltip");
-    const iconContainer = btn.querySelector(".ytp-pip-icon");
+    const tooltip = btn.querySelector(".pip-ext-tooltip");
+    const iconContainer = btn.querySelector(".pip-ext-icon");
 
     if (pipActive) {
-      btn.classList.add("ytp-pip-active");
+      btn.classList.add("pip-ext-active");
       if (tooltip) tooltip.textContent = i18n("tooltipExit");
       if (iconContainer) {
         iconContainer.replaceChildren(createPipExitIcon());
       }
     } else {
-      btn.classList.remove("ytp-pip-active");
+      btn.classList.remove("pip-ext-active");
       if (tooltip) tooltip.textContent = i18n("tooltipEnter");
       if (iconContainer) {
         iconContainer.replaceChildren(createPipIcon());
@@ -130,10 +160,10 @@
     }
   }
 
-  // ─── PiP event listeners ───────────────────────────────────────
+  // ─── PiP event listeners ─────────────────────────────────────
   function attachVideoListeners(video) {
-    if (video.__ytpipListenersAttached) return;
-    video.__ytpipListenersAttached = true;
+    if (video.__pipExtListenersAttached) return;
+    video.__pipExtListenersAttached = true;
 
     video.addEventListener("enterpictureinpicture", (e) => {
       pipActive = true;
@@ -141,9 +171,7 @@
 
       const pipWindow = e.pictureInPictureWindow;
       if (pipWindow) {
-        // Save size on resize
         pipWindow.addEventListener("resize", () => savePipSize(pipWindow));
-        // Save initial size
         savePipSize(pipWindow);
       }
     });
@@ -154,7 +182,18 @@
     });
   }
 
-  // ─── Create and inject the PiP button ──────────────────────────
+  // ─── Site-specific button class names ─────────────────────────
+  function getButtonClasses() {
+    if (currentSite === SITE_YOUTUBE) {
+      return "pip-ext-button ytp-button";
+    }
+    if (currentSite === SITE_NETFLIX) {
+      return "pip-ext-button pip-ext-netflix";
+    }
+    return "pip-ext-button";
+  }
+
+  // ─── Create and inject the PiP button ─────────────────────────
   function injectButton() {
     // Already injected?
     if (document.getElementById(PIP_BUTTON_ID)) return;
@@ -164,20 +203,19 @@
 
     const btn = document.createElement("button");
     btn.id = PIP_BUTTON_ID;
-    btn.className = "ytp-pip-button ytp-button";
+    btn.className = getButtonClasses();
     btn.setAttribute("aria-label", i18n("ariaLabel"));
     btn.setAttribute("title", "");
-    btn.setAttribute("data-tooltip-target-id", "ytp-pip-button-custom");
 
     // Tooltip span
     const tooltip = document.createElement("span");
-    tooltip.className = "ytp-pip-tooltip";
+    tooltip.className = "pip-ext-tooltip";
     tooltip.textContent = i18n("tooltipEnter");
     btn.appendChild(tooltip);
 
     // Icon wrapper
     const iconWrap = document.createElement("span");
-    iconWrap.className = "ytp-pip-icon";
+    iconWrap.className = "pip-ext-icon";
     iconWrap.appendChild(createPipIcon());
     btn.appendChild(iconWrap);
 
@@ -187,65 +225,69 @@
       togglePip();
     });
 
-    // Insert before the fullscreen button within the same container
-    const fullscreenBtn = container.querySelector(".ytp-fullscreen-button");
-    if (fullscreenBtn && fullscreenBtn.parentNode === container) {
-      container.insertBefore(btn, fullscreenBtn);
+    // Insert at the right place in the controls bar
+    const ref = getInsertionReference(container);
+    if (ref) {
+      container.insertBefore(btn, ref);
     } else {
-      // Fallback: append at the beginning
-      container.prepend(btn);
+      // Netflix: append at end; YouTube: prepend
+      if (currentSite === SITE_NETFLIX) {
+        container.appendChild(btn);
+      } else {
+        container.prepend(btn);
+      }
     }
 
     // Attach listeners to the video
     const video = getVideo();
     if (video) {
       attachVideoListeners(video);
-      // Sync initial state
       pipActive = !!document.pictureInPictureElement;
       updateButtonState();
     }
   }
 
-  // ─── Auto-PiP on visibility change ─────────────────────────────
+  // ─── Auto-PiP on visibility change ────────────────────────────
   function handleVisibilityChange() {
     if (!autoPipEnabled) return;
     const video = getVideo();
     if (!video) return;
 
     if (document.visibilityState === "hidden") {
-      // Only auto-pip if the video is playing
       if (!video.paused && !document.pictureInPictureElement) {
         video.requestPictureInPicture().catch(() => {
           // Silently fail — user gesture may be required
         });
       }
     }
-    // Note: we do NOT auto-exit PiP when returning, so user can keep watching
   }
 
   document.addEventListener("visibilitychange", handleVisibilityChange);
 
-  // ─── Message listener (from background.js) ─────────────────────
-  chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-    if (msg.action === "toggle-pip") {
+  // ─── Message listener (from background.js) ────────────────────
+  chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
+    if (request.action === "toggle-pip") {
       togglePip();
       sendResponse({ ok: true });
-    } else if (msg.action === "set-auto-pip") {
-      autoPipEnabled = msg.enabled;
+    } else if (request.action === "set-auto-pip") {
+      autoPipEnabled = request.enabled;
       sendResponse({ ok: true });
     }
     return true;
   });
 
-  // ─── Observer: re-inject button on YouTube SPA navigation ──────
+  // ─── Observer: re-inject button on SPA navigation ─────────────
   function setupObserver() {
-    // YouTube fires this custom event on SPA navigation
-    document.addEventListener("yt-navigate-finish", () => {
-      // Small delay to let the player DOM render
-      setTimeout(injectButton, 500);
-    });
+    if (currentSite === SITE_YOUTUBE) {
+      // YouTube fires this custom event on SPA navigation
+      document.addEventListener("yt-navigate-finish", () => {
+        setTimeout(injectButton, 500);
+      });
+    }
 
-    // Also watch for DOM changes (player might re-render)
+    // Universal MutationObserver for both sites
+    // Netflix is a React SPA that re-renders controls frequently,
+    // YouTube also re-renders on navigation
     const observer = new MutationObserver(() => {
       if (!document.getElementById(PIP_BUTTON_ID) && getInsertionTarget()) {
         injectButton();
@@ -261,13 +303,15 @@
     });
   }
 
-  // ─── Init ───────────────────────────────────────────────────────
+  // ─── Init ─────────────────────────────────────────────────────
   function init() {
+    if (currentSite === SITE_UNKNOWN) return;
+
     injectButton();
     setupObserver();
 
     // Retry a few times in case the player loads slowly
-    const retries = [1000, 2000, 4000];
+    const retries = [1000, 2000, 4000, 8000];
     retries.forEach((delay) => {
       setTimeout(() => {
         if (!document.getElementById(PIP_BUTTON_ID)) {

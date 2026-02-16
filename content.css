@@ -1,35 +1,42 @@
-/* YouTube PiP Extension — Button Styles */
+/* PiP Extension — Button Styles (YouTube + Netflix) */
 
-.ytp-pip-button {
+/* ─── Shared base styles ─────────────────────────────────────── */
+.pip-ext-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 100%;
   cursor: pointer;
   opacity: 0.9;
   position: relative;
-  vertical-align: top;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  outline: none;
 }
 
-.ytp-pip-button:hover {
+.pip-ext-button:hover {
   opacity: 1;
 }
 
-.ytp-pip-button svg {
-  width: 24px;
-  height: 24px;
+.pip-ext-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pip-ext-icon svg {
   fill: #fff;
   pointer-events: none;
 }
 
 /* Active state when PiP is on */
-.ytp-pip-button.ytp-pip-active svg {
+.pip-ext-button.pip-ext-active .pip-ext-icon svg {
   fill: #3ea6ff;
 }
 
-/* Tooltip */
-.ytp-pip-button .ytp-pip-tooltip {
+/* ─── Tooltip (shared) ───────────────────────────────────────── */
+.pip-ext-tooltip {
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -37,7 +44,6 @@
   background: rgba(28, 28, 28, 0.9);
   color: #fff;
   font-size: 12px;
-  font-family: "YouTube Noto", Roboto, Arial, Helvetica, sans-serif;
   padding: 5px 8px;
   border-radius: 2px;
   white-space: nowrap;
@@ -48,6 +54,51 @@
   z-index: 9999;
 }
 
-.ytp-pip-button:hover .ytp-pip-tooltip {
+.pip-ext-button:hover .pip-ext-tooltip {
   opacity: 1;
+}
+
+/* ─── YouTube-specific styles ────────────────────────────────── */
+.pip-ext-button.ytp-button {
+  width: 48px;
+  height: 100%;
+  vertical-align: top;
+}
+
+.pip-ext-button.ytp-button .pip-ext-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pip-ext-button.ytp-button .pip-ext-tooltip {
+  font-family: "YouTube Noto", Roboto, Arial, Helvetica, sans-serif;
+}
+
+/* ─── Netflix-specific styles ────────────────────────────────── */
+.pip-ext-button.pip-ext-netflix {
+  width: 44px;
+  height: 44px;
+  border-radius: 2px;
+}
+
+.pip-ext-button.pip-ext-netflix:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pip-ext-button.pip-ext-netflix .pip-ext-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pip-ext-button.pip-ext-netflix .pip-ext-tooltip {
+  font-family: Netflix Sans, Helvetica Neue, Segoe UI, Roboto, Ubuntu, sans-serif;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+/* Netflix active state — use Netflix red instead of YouTube blue */
+.pip-ext-button.pip-ext-netflix.pip-ext-active .pip-ext-icon svg {
+  fill: #e50914;
 }
