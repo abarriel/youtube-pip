@@ -8,6 +8,7 @@ const PipExt = (() => {
 
   let pipActive = false;
   let autoPipEnabled = true;
+  let userOptedOut = false;
 
   // ─── i18n ──────────────────────────────────────────────────────
   const i18n = (key) => chrome.i18n.getMessage(key) || key;
@@ -34,8 +35,10 @@ const PipExt = (() => {
     if (!video) return;
     try {
       if (document.pictureInPictureElement) {
+        userOptedOut = true;
         await document.exitPictureInPicture();
       } else if (document.pictureInPictureEnabled) {
+        userOptedOut = false;
         await video.requestPictureInPicture();
       }
     } catch (err) {
@@ -114,7 +117,7 @@ const PipExt = (() => {
   // ─── Auto-PiP on tab switch ────────────────────────────────────
   function setupAutoPip(getVideo) {
     document.addEventListener("visibilitychange", () => {
-      if (!autoPipEnabled) return;
+      if (!autoPipEnabled || userOptedOut) return;
       const video = getVideo();
       if (!video || video.paused || document.pictureInPictureElement) return;
       if (document.visibilityState === "hidden") {
